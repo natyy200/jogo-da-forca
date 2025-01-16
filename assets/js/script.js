@@ -32,6 +32,8 @@ function generateGuessSection() {
         span.textContent = '_';
         span.setAttribute('word', letter.toUpperCase());
         contentGuessWord.appendChild(span);
+
+        contentClue.textContent = `Dica: ${clue}`;
     });
 }
 

@@ -19,37 +19,70 @@ function init() {
 }
 
 function generateGuessSection() {
-    contentGuessWord.textContent = '';
+  contentGuessWord.textContent = "";
 
-    const { word, clue } = getWord();
-    const wordWithoutAccent = word
+  const { word, clue } = getWord();
+  const wordWithoutAccent = word
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(/[\u0300-\u036f]/g, "");
 
-    Array.from(wordWithoutAccent).forEach((letter) => {
-        const span = document.createElement('span');
+  Array.from(wordWithoutAccent).forEach((letter) => {
+    const span = document.createElement("span");
 
-        span.textContent = '_';
-        span.setAttribute('word', letter.toUpperCase());
-        contentGuessWord.appendChild(span);
+    span.textContent = "_";
+    span.setAttribute("word", letter.toUpperCase());
+    contentGuessWord.appendChild(span);
+  });
 
-        contentClue.textContent = `Dica: ${clue}`;
-    });
+  contentClue.textContent = `Dica: ${clue}`;
+}
+
+function wrongAnswer() {
+  indexImg++;
+  img.src = `./assets/img/img${indexImg}.png`;
+
+  if (indexImg === 7) {
+    setTimeout(() => {
+      alert("Perdeu :/");
+      init();
+    }, 100);
+  }
+}
+
+function verifyLetter(letter) {
+  const arr = document.querySelectorAll(`[word="${letter}"]`);
+
+  if (!arr.length) wrongAnswer();
+
+  arr.forEach((e) => {
+    e.textContent = letter;
+  });
+
+  const spans = document.querySelectorAll(`.guess-word span`);
+  const won = !Array.from(spans).find((span) => span.textContent === "_");
+
+  if (won) {
+    setTimeout(() => {
+      alert("Ganhou!!!");
+      init();
+    }, 100);
+  }
 }
 
 function generateButtons() {
-  contentBtns.textContent = '';
+  contentBtns.textContent = "";
 
   for (let i = 97; i < 123; i++) {
     const btn = document.createElement("button");
     const letter = String.fromCharCode(i).toUpperCase();
     btn.textContent = letter;
 
-    btn.onClick = () => {
-        btn.disabled = true;
-        btn.style.backgroundColor = "gray";
+    btn.onclick = () => {
+      btn.disabled = true;
+      btn.style.backgroundColor = "gray";
+      verifyLetter(letter);
     };
 
     contentBtns.appendChild(btn);
   }
-};
+}

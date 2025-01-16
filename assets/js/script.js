@@ -14,16 +14,39 @@ function init() {
   indexImg = 1;
   img.src = `./assets/img/img1.png`;
 
+  generateGuessSection();
   generateButtons();
 }
 
+function generateGuessSection() {
+    contentGuessWord.textContent = '';
+
+    const { word, clue } = getWord();
+    const wordWithoutAccent = word
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, '');
+
+    Array.from(wordWithoutAccent).forEach((letter) => {
+        const span = document.createElement('span');
+
+        span.textContent = '_';
+        span.setAttribute('word', letter.toUpperCase());
+        contentGuessWord.appendChild(span);
+    });
+}
+
 function generateButtons() {
-  contentBtns.textContent = "";
+  contentBtns.textContent = '';
 
   for (let i = 97; i < 123; i++) {
     const btn = document.createElement("button");
     const letter = String.fromCharCode(i).toUpperCase();
     btn.textContent = letter;
+
+    btn.onClick = () => {
+        btn.disabled = true;
+        btn.style.backgroundColor = "gray";
+    };
 
     contentBtns.appendChild(btn);
   }
